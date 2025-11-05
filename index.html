@@ -27,6 +27,10 @@
         body {
             background-color: var(--dark);
             color: var(--light);
+            background-image: 
+            radial-gradient(circle at 25% 25%, rgba(255, 0, 85, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(0, 170, 255, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
             overflow-x: hidden;
             line-height: 1.6;
         }
@@ -280,16 +284,18 @@
         }
 
         .show-card {
-            border-radius: 10px;
+            border-radius: 15px; /* Bordi più arrotondati */
             overflow: hidden;
-            transition: var(--transition);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.15); /* Bordo più spesso e sottile */
             display: flex;
             flex-direction: column;
             height: 500px;
             background-size: cover;
             background-position: center;
+            text-decoration: none; /* Rimuove sottolineatura */
+            color: inherit; /* Mantiene il colore del testo originale */
         }
 
         .show-card::before {
@@ -299,8 +305,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.9));
+            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.3), rgba(10, 10, 10, 0.95));
             z-index: 1;
+            border-radius: 15px; /* Stesso border-radius della card */
         }
 
         .show-card::after {
@@ -313,6 +320,7 @@
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             transition: var(--transition);
             z-index: 2;
+            border-radius: 15px; /* Stesso border-radius della card */
         }
 
         .show-card:hover::after {
@@ -320,13 +328,14 @@
         }
 
         .show-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(255, 0, 85, 0.3);
+            transform: translateY(-10px) scale(1.02); /* Aggiunto scale(1.02) */
+            box-shadow: 0 15px 40px rgba(255, 0, 85, 0.4);
             border-color: var(--primary);
+            text-decoration: none;
         }
 
         .show-content {
-            padding: 25px;
+            padding: 30px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
@@ -342,26 +351,77 @@
             letter-spacing: 1px;
             text-align: center;
             color: var(--light);
+            text-decoration: none; /* Rimuove sottolineatura */
+            border-bottom: none; /* Rimuove eventuali bordi inferiori */
         }
 
         .show-card p {
-            color: #ccc;
+            color: #e0e0e0;
             flex-grow: 1;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
+            line-height: 1.6;
+            text-decoration: none; /* Rimuove sottolineatura */
         }
 
         .show-tag {
             display: inline-block;
-            padding: 5px 10px;
+            padding: 8px 16px;
             background: var(--primary);
             color: var(--dark);
             font-size: 0.8rem;
             font-weight: bold;
-            border-radius: 3px;
+            border-radius: 20px; /* Bordi arrotondati per il tag */
             text-transform: uppercase;
             letter-spacing: 1px;
             align-self: center;
+            text-decoration: none; /* Rimuove sottolineatura */
+        }
+
+        .show-card * {
+            text-decoration: none !important;
+        }
+
+        /* Migliora il contrasto per le scritte */
+        .show-content h3,
+        .show-content p,
+        .show-content .show-tag {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .show-card .show-content h3,
+        .show-card .show-content p,
+        .show-card .show-tag {
+            transition: all 0.4s ease;
+        }
+
+        .show-card:hover .show-content h3 {
+            color: var(--primary);
+            transform: translateY(-5px);
+            text-shadow: 0 5px 15px rgba(255, 0, 85, 0.5);
+        }
+
+        .show-card:hover .show-content p {
+            transform: translateY(-3px);
+            color: var(--light);
+        }
+
+        .show-card:hover .show-tag {
+            background: var(--accent);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+        }
+
+        /* CSS per animazione con JavaScript */
+        .show-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .show-card.animated {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Footer */
@@ -698,6 +758,25 @@
                 header.style.background = 'rgba(10, 10, 10, 0.9)';
             }
         });
+
+        // Animazione cards al scroll
+        function animateCards() {
+            const cards = document.querySelectorAll('.show-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('animated');
+                        }, index * 550); // Delay progressivo
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            cards.forEach(card => observer.observe(card));
+        }
+
+        // Esegui quando la pagina è caricata
+        document.addEventListener('DOMContentLoaded', animateCards);
     </script>
 </body>
 </html>
